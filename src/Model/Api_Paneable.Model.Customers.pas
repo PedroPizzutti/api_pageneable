@@ -39,6 +39,7 @@ implementation
 function TModelCustomers.Connection: IModelCustomers;
 begin
   Result := Self;
+  Self.FDmCustomers := TDmCustomers.Create(nil);
   Self.FDmCustomers.QCustomers.Connection := DmConnection.Connection;
 end;
 

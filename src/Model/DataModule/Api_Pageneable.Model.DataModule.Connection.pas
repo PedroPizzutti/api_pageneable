@@ -17,6 +17,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    procedure Connect;
   end;
 
 var
@@ -27,5 +28,12 @@ implementation
 {%CLASSGROUP 'System.Classes.TPersistent'}
 
 {$R *.dfm}
+
+{ TDmConnection }
+
+procedure TDmConnection.Connect;
+begin
+  Self.Connection.Connected;
+end;
 
 end.
