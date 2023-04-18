@@ -1,0 +1,73 @@
+unit App;
+
+interface
+
+uses
+  System.SysUtils,
+  Winapi.Windows,
+  Horse,
+  Horse.CORS,
+  Horse.Jhonson,
+  Horse.GBSwagger;
+
+type
+  TApp = class
+  private
+    LApp: THorse;
+    procedure Middlewares;
+    procedure ConsoleLog;
+  public
+    function InitServer(const port: Integer): THorse;
+    constructor Create;
+  end;
+
+implementation
+
+{ TApp }
+
+procedure TApp.ConsoleLog;
+begin
+  Writeln('/// Api_pageneable on \\\');
+  Writeln(Format('Sever on: %s', [LApp.Host]));
+  Writeln(Format('Port: %d', [LApp.Port]));
+  {IFDEBUG}
+    Writeln('Access in: http://localhost:' + LApp.Port.ToString);
+  {ENDIF}
+  Writeln('Press ENTER to stop the application...');
+  Readln;
+  THorse.StopListen;
+  FreeConsole;
+end;
+
+constructor TApp.Create;
+begin
+  Self.LApp := THorse.Create;
+  Self.Middlewares;
+end;
+
+function TApp.InitServer(const port: Integer): THorse;
+begin
+  try
+    Self.LApp.Listen(port,
+    procedure
+    begin
+      Self.ConsoleLog;
+    end
+    );
+  except on E: Exception do
+    begin
+
+    end;
+
+  end;
+  Self.LApp.Listen(port);
+end;
+
+procedure TApp.Middlewares;
+begin
+  Self.LApp.Use(Jhonson);
+  Self.LApp.Use(CORS);
+  Self.LApp.Use(HorseSwagger);
+end;
+
+end.

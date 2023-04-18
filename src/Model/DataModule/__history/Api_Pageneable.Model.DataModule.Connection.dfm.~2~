@@ -1,0 +1,11 @@
+object DmConnection: TDmConnection
+  OldCreateOrder = False
+  Height = 181
+  Width = 164
+  object Connection: TFDConnection
+    Params.Strings = (
+      'ConnectionDef=SQLite_Demo')
+    Left = 56
+    Top = 49
+  end
+end

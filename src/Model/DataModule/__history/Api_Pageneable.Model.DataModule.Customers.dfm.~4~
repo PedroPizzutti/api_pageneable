@@ -1,0 +1,13 @@
+object DmCustomers: TDmCustomers
+  OldCreateOrder = False
+  Height = 150
+  Width = 215
+  object QCustomers: TFDQuery
+    Connection = DmConnection.Connection
+    SQL.Strings = (
+      'SELECT *'
+      '  FROM CUSTOMERS;')
+    Left = 88
+    Top = 56
+  end
+end

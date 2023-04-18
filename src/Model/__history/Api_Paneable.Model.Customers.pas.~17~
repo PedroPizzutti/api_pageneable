@@ -1,0 +1,62 @@
+unit Api_Paneable.Model.Customers;
+
+interface
+
+uses
+  System.Classes,
+  Api_Pageneable.Model.DataModule.Customers;
+
+type
+  ICustomers = interface
+    function DataModule: TDmCustomers;
+    function Get: ICustomers;
+  end;
+
+  TCustomers = class(TInterfacedObject, ICustomers)
+  private
+    LDmCustomers: TDmCustomers;
+
+    function DataModule: TDmCustomers;
+    function Get: ICustomers;
+  protected
+
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    class function New: ICustomers;
+  published
+
+  end;
+
+implementation
+
+{ TCustomers }
+
+constructor TCustomers.Create;
+begin
+  Self.LDmCustomers := DmCustomers;
+end;
+
+function TCustomers.DataModule: TDmCustomers;
+begin
+  Result := LDmCustomers;
+end;
+
+destructor TCustomers.Destroy;
+begin
+  Self.LDmCustomers.DisposeOf;
+  inherited;
+end;
+
+function TCustomers.Get: ICustomers;
+begin
+  Result := Self;
+  LDmCustomers.QCustomers.Open;
+end;
+
+class function TCustomers.New: ICustomers;
+begin
+  Result := Self.Create;
+end;
+
+end.
