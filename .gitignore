@@ -1,5 +1,6 @@
 Win32/*
-__history/*
+**/__history/*
+**/__recovery/*
 *.dproj.local
 *.identcache
 *.res

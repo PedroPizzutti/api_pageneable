@@ -12,7 +12,10 @@ type
     ['{1D67AE20-47A4-4650-85EC-6D7D0435E47D}']
     function Connection: IModelCustomers;
     function DataModule: TDmCustomers;
+
     function Get: IModelCustomers;
+    function Pagination(APage: Integer = 1;
+    AQtdPerPage: Integer = 10): IModelCustomers;
   end;
 
   TModelCustomers = class(TInterfacedObject, IModelCustomers)
@@ -21,7 +24,10 @@ type
 
     function Connection: IModelCustomers;
     function DataModule: TDmCustomers;
+
     function Get: IModelCustomers;
+    function Pagination(APage: Integer = 1;
+      AQtdPerPage: Integer = 10): IModelCustomers;
   protected
 
   public
@@ -39,13 +45,12 @@ implementation
 function TModelCustomers.Connection: IModelCustomers;
 begin
   Result := Self;
-  Self.FDmCustomers := TDmCustomers.Create(nil);
   Self.FDmCustomers.QCustomers.Connection := DmConnection.Connection;
 end;
 
 constructor TModelCustomers.Create;
 begin
-  Self.FDmCustomers := DmCustomers;
+  Self.FDmCustomers := TDmCustomers.Create(nil);;
 end;
 
 function TModelCustomers.DataModule: TDmCustomers;
@@ -62,6 +67,7 @@ end;
 function TModelCustomers.Get: IModelCustomers;
 begin
   Result := Self;
+  FDmCustomers.QCustomers.Close;
   FDmCustomers.QCustomers.Prepare;
   FDmCustomers.QCustomers.Open;
 end;
@@ -69,6 +75,18 @@ end;
 class function TModelCustomers.New: IModelCustomers;
 begin
   Result := Self.Create;
+end;
+
+function TModelCustomers.Pagination(APage: Integer = 1;
+    AQtdPerPage: Integer = 10): IModelCustomers;
+begin
+  Result := Self;
+  if FDmCustomers.QCustomers.Connection.Connected then
+  begin
+    FDmCustomers.QCustomers.Disconnect;
+  end;
+  FDmCustomers.QCustomers.FetchOptions.RecsMax := AQtdPerPage;
+  FDmCustomers.QCustomers.FetchOptions.RecsSkip := (APage - 1) * AQtdPerPage;
 end;
 
 end.

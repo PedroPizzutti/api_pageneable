@@ -25,7 +25,8 @@ type
   TControllerCustomers = class(THorseGBSwagger)
 
   public
-    [SwagGET('lists', 'Lists customers')]
+    [SwagGET('', 'Lists customers')]
+    [SwagParamQuery('page', 'número da página')]
     [SwagResponse(200)]
     [SwagResponse(400)]
     procedure Get;
@@ -37,22 +38,30 @@ implementation
 
 procedure TControllerCustomers.Get;
 var
+  LPage: Integer; 
   LModelCustomers: IModelCustomers;
-  LJSONCustomers: TJSONObject;
+  LJSONCustomers: TJSONArray;
 begin
-  LModelCustomers :=
-    TModelCustomers
-    .New
-    .Connection;
+  try
+    LModelCustomers :=
+      TModelCustomers
+      .New
+      .Connection;
 
-  LJSONCustomers :=
-    LModelCustomers
-      .Get
-      .DataModule
-      .QCustomers
-      .AsJSONObject;
+    TryStrToInt(FRequest.Query.Items['page'], LPage);
 
-  FResponse.Send<TJSONObject>(LJSONCustomers);
+    LJSONCustomers :=
+      LModelCustomers
+        .Pagination(LPage)
+        .Get
+        .DataModule
+        .QCustomers
+        .AsJSONArray;
+
+    FResponse.Send<TJSONArray>(LJSONCustomers);
+  except on E: Exception do
+    FResponse.Send('Error: ' + E.Message);
+  end;
 end;
 
 end.
